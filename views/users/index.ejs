@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
+    <h1 id="name"><%= title %></h1>
     <div id="messages"></div>
     <form id="username" >
         <input id="name_input" type="text">
@@ -62,7 +62,7 @@
 		        if(data){
 		                $('#username').hide();
 		                $('#chat_form').show();
-
+		                $('#name').html(username);
 		        }
 		     });
 		 });

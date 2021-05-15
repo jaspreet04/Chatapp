@@ -4,19 +4,18 @@
 
     </head>
     <body>
-        <div style="display: flex;">
-        	
+        <div id="parent" style="display: flex;">
+        
         	<div id="users" style="width: 200px; height: 400px;">users</div>
-        	<div id="messages" style="width: 220px; height: 400px; border:1px solid;"></div>
         </div>
 
-        <form id="form" id="chat_form" style="margin-left: 200px;">
+<!--         <form id="form" id="chat_form">
             <input id="chat_input" type="text">
             <input type="submit" value="Send">
-        </form>
+        </form> -->
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
 
         <script>  
      var currentUser;
@@ -26,13 +25,21 @@
 	    socket.emit('joinoperator', 'operator');
 	 });
 
-/* socket.on('messages', function(data) {
-                alert(data);
-        });*/
 
  socket.on('messages', function(data) {
+ 		var divmsg = 'messagebox'+data.from;
+ 		currentUser = data.from;
+ 		if(data.from == 123){
+ 			var divmsg = 'messagebox'+data.to;
+ 			currentUser = data.to;
+ 		}
+ 		console.log(data);
+ 		console.log(divmsg);
+ 		if (!$('#'+divmsg).length){
+        	$('#parent').append('<div><div id="'+divmsg+'" style="width: 220px; height: 400px; border:1px solid;"></div><div id="form" id="chat_form"> <input id="chat_input'+currentUser+'" type="text"> <button onclick=send('+currentUser+') type="submit" value="Send">Send</button></div></div');
+    	}
 
-         $('#messages').append(data['msg']+ "<br/>");
+        $('#'+divmsg).append(data['msg']+ "<br/>");
    });
 
  socket.on('broadnewreq', function(data) {
@@ -60,20 +67,17 @@ function selectuser(cusername){
     $('#messages').empty();
 }
 
- $('form').submit(function(e){
-     e.preventDefault();
-
-     var message = $('#chat_input').val();
+ function send(user){
+ 	var message = $('#chat_input'+user).val();
 	var myObject = {
 		msg: message,
-		from: "operator",
-		to: currentUser
+		from: 123,
+		to: user
 	};
 	//alert(message);
 	socket.emit('messages', myObject);
 	$('#chat_input').val('');
- });
-
+ }
 
 </script>
     </body>
